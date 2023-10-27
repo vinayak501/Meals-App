@@ -53,43 +53,41 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _animationController,
-        child: GridView(
-          padding: const EdgeInsets.all(24),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.5,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20),
-          children: [
-            for (final category in availableCategories)
-              CategoryGridItem(
-                category: category,
-                onSelectCategory: () {
-                  _selectCategory(context, category);
-                },
-              )
-          ],
+    animation: _animationController,
+    child: GridView(
+      padding: const EdgeInsets.all(24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.5,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+      ),
+      children: [
+        for (final category in availableCategories)
+          CategoryGridItem(
+            category: category,
+            onSelectCategory: () {
+              _selectCategory(context, category);
+            },
+          )
+      ],
+    ),
+    builder: (context, child) {
+      final slideAnimation = Tween<Offset>(
+        begin: const Offset(0, 0.3),
+        end: const Offset(0, 0),
+      ).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: Curves.bounceInOut,
         ),
-        builder: (context, child) => SlideTransition(
-              position: _animationController.drive(
-                Tween(
-                  begin: const Offset(0, 0.3),
-                  end: const Offset(0, 0),
-                ).animate(
-                  CurvedAnimation(
-                      parent: _animationController, 
-                      curve: Curves.bounceInOut
-                  ),
-                ) as Animatable<Offset>,
-              ),
-              child: child,
-            )
+      );
 
-        // Padding(
-        //   padding: EdgeInsets.only(top: 100-_animationController.value * 100),
-        //   child: child,
-        // ),
-        );
-  }
+      return SlideTransition(
+        position: slideAnimation,
+        child: child,
+      );
+    },
+  );
+}
 }
